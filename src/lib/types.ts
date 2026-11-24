@@ -1,9 +1,4 @@
-export type CategoryId =
-  | "cooking"
-  | "craft"
-  | "nature"
-  | "sound"
-  | "wellness";
+export type CategoryId = "life" | "work" | "money" | "tech" | "culture" | "society";
 
 export interface Category {
   id: CategoryId;
@@ -11,57 +6,65 @@ export interface Category {
   emoji: string;
 }
 
-export interface TimeSlot {
-  /** 슬롯 식별자 (경험 내에서 유일) */
-  id: string;
-  /** ISO 8601 날짜시간 (KST 기준으로 작성) */
-  startsAt: string;
-  /** 진행 시간(분) */
-  durationMinutes: number;
-  /** 남은 자리 */
-  seatsLeft: number;
-}
+export type SortId = "hot" | "new" | "open";
 
-export interface Host {
-  name: string;
-  intro: string;
-}
+/** 질문을 가져가려는 사람이 무엇을 만들려는지 */
+export type ProposalKind = "content" | "startup" | "research" | "other";
 
-export interface Experience {
+export interface Answer {
   id: string;
-  title: string;
-  tagline: string;
-  category: CategoryId;
-  /** 1인당 가격 (원) */
-  price: number;
-  location: string;
-  /** 카드/상세 배경에 쓰는 그라데이션 (이미지 대체용 플레이스홀더) */
-  gradient: string;
-  description: string;
-  /** 준비물 · 포함 사항 */
-  includes: string[];
-  host: Host;
-  slots: TimeSlot[];
-  rating: number;
-  reviewCount: number;
-}
-
-export interface Reservation {
-  id: string;
-  experienceId: string;
-  slotId: string;
-  guestName: string;
-  guestPhone: string;
-  headcount: number;
-  /** 결제 예정 총액 (원) */
-  totalPrice: number;
+  authorName: string;
+  body: string;
   createdAt: string;
 }
 
-export interface ReservationInput {
-  experienceId: string;
-  slotId: string;
-  guestName: string;
-  guestPhone: string;
-  headcount: number;
+/**
+ * 빌더(크리에이터·창업자)가 질문 작성자에게 보내는 "이 질문 쓰고 싶어요" 제안.
+ * contact는 질문 작성자에게만 보여야 하는 값이라 공개 뷰에는 싣지 않는다.
+ */
+export interface Proposal {
+  id: string;
+  builderName: string;
+  kind: ProposalKind;
+  plan: string;
+  /** 제안 금액 (원). 0이면 출처 표기 조건의 무상 사용 요청 */
+  offer: number;
+  contact: string;
+  createdAt: string;
+}
+
+export interface Question {
+  id: string;
+  title: string;
+  body: string;
+  category: CategoryId;
+  authorName: string;
+  createdAt: string;
+  /** 시드 데이터용 기본 궁금해요 수 */
+  baseLikes: number;
+  /** 궁금해요를 누른 방문자 id */
+  likedBy: Set<string>;
+  answers: Answer[];
+  proposals: Proposal[];
+}
+
+export type PublicProposal = Omit<Proposal, "contact">;
+
+/** 화면/API로 내보내는 질문 형태 */
+export interface QuestionView {
+  id: string;
+  title: string;
+  body: string;
+  category: CategoryId;
+  authorName: string;
+  createdAt: string;
+  likeCount: number;
+  likedByMe: boolean;
+  answerCount: number;
+  proposalCount: number;
+}
+
+export interface QuestionDetail extends QuestionView {
+  answers: Answer[];
+  proposals: PublicProposal[];
 }

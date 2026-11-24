@@ -1,8 +1,8 @@
 {
-  "name": "gyeongheom-sangjeom",
+  "name": "jilmun-sangjeom",
   "version": "0.1.0",
   "private": true,
-  "description": "경험상점 - 일상의 경험을 사고파는 마켓플레이스 MVP",
+  "description": "질문상점 - 질문과 생각을 공유하고, 그 질문을 콘텐츠·창업의 출발점으로 가져가는 마켓플레이스 MVP",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
